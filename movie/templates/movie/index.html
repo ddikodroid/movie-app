@@ -1,0 +1,116 @@
+{% load staticfiles %}
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    {% block title %} <title>Movie App | Home</title> {% endblock %}
+    <link rel="stylesheet" href="{% static 'movie/bootstrap.min.css' %}">
+    <link rel="stylesheet" href="{% static 'movie/font-awesome/css/font-awesome.min.css' %}">
+    {% block style %} <link rel="stylesheet" href="{% static 'movie/app.css' %}"> {% endblock %}
+  </head>
+  <body>
+
+    {% block navbar %}
+      <!-- start: navbar -->
+      <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+        <a class="navbar-brand" href="/">Movie App</a>
+        {% if user.is_authenticated %}
+        <div class="cs-right-menu">
+          <li class="nav-item dropdown">
+            <a class="nav-link dropdown-toggle" href="#" id="userDropdown" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+              {{ user.username }} <i class="fa fa-user"></i>
+            </a>
+            <div class="dropdown-menu" aria-labelledby="userDropdown">
+              <a class="dropdown-item" href="#">My Profile</a>
+              <a class="dropdown-item" href="logout">Logout</a>
+            </div>
+          </li>
+        </div>
+        {% endif %}
+      </nav>
+      <!-- end: navbar -->
+    {% endblock %}
+
+    <div class="container cs-content">
+    
+    {% block content  %}
+      <div class="row cs-section-header">
+          <div class="col-lg-12"><h2>Movie List</h2></div>
+      </div>
+      <!-- start: form - add movie  -->
+      <div class="row cs-form-add">
+        {% include 'movie/movie_form.html' %}
+      </div>
+      <!-- end: form - add movie  -->
+      <!-- start: table - movie  -->
+      <div class="row">
+          <table class="table">
+              <thead>
+              <tr>
+                  <th scope="col">#</th>
+                  <th scope="col">Title</th>
+                  <th scope="col">Genre</th>
+                  <th scope="col">Director</th>
+                  <th scope="col">Rating</th>
+                  <th scope="col"></th>
+              </tr>
+              </thead>
+              <tbody>
+              {% for movie in movies %}
+              <tr>
+                  <td>{{ movie.id }}</td>
+                  <td>{{ movie.title }}</td>
+                  <td>{{ movie.genre }}</td>
+                  <td>{{ movie.director }}</td>
+                  <td>{{ movie.rating }}</td>
+                  <td>
+                      <a class="btn btn-sm btn-outline-primary" href="edit/{{ movie.id }}">
+                        <i class="fa fa-pencil-square-o" aria-hidden="true"></i>
+                      </a>
+                      <a class="btn btn-sm btn-outline-danger" onclick="sendData({{ movie.id }})" data-toggle="modal" data-target="#exampleModalCenter">
+                        <i class="fa fa-trash" aria-hidden="true"></i>
+                      </a>
+                  </td>
+              </tr>
+              {% endfor %}
+              {% if not movies %}
+                <tr>
+                  <td colspan="6" class="cs-text-center cs-empty-table"> There is no movie yet. Please add a movie ! </td>
+                </tr>
+              {% endif %}
+              </tbody>
+          </table>
+      </div>
+      <!-- end: table - movie  -->
+      <!-- start: modal - delete confirmation  -->
+      <div class="modal fade" id="exampleModalCenter" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+          <div class="modal-dialog modal-dialog-centered" role="document">
+            <div class="modal-content">
+              <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLongTitle">Confirmation</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                  <span aria-hidden="true">&times;</span>
+                </button>
+              </div>
+              <div class="modal-body">
+                <p>Are you sure want to Delete this movie ?</p>
+              </div>
+              <div class="modal-footer">
+                <a class="btn btn-primary" data-dismiss="modal">Cancel</a>
+                <a class="btn btn-danger" id="btn-delete" href="">Delete</a>
+              </div>
+            </div>
+          </div>
+      </div>
+      <!-- end: modal - delete confirmation  -->
+    {% endblock  %} 
+
+    </div>
+
+    <script src="{% static 'movie/jquery-3.3.1.min.js' %}"></script>
+    <script src="{% static 'movie/popper.min.js' %}"></script>
+    <script src="{% static 'movie/bootstrap.min.js' %}"></script>
+    {% block script %} <script src="{% static 'movie/app.js' %}"></script> {% endblock  %}
+  </body>
+</html>
